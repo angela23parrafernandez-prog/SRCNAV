@@ -1,0 +1,51 @@
+<ion-header translucent>
+  <ion-toolbar color="primary">
+    <ion-title>Iniciar Sesión</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <ion-item>
+      <ion-label position="floating">Cédula</ion-label>
+      <ion-input
+        type="text"
+        maxlength="10"
+        formControlName="cedula"
+        inputmode="numeric"
+        autocomplete="off"
+      ></ion-input>
+    </ion-item>
+    <ion-note
+      *ngIf="loginForm.get('cedula')?.invalid && loginForm.get('cedula')?.touched"
+      color="danger"
+    >
+      La cédula debe tener exactamente 10 dígitos
+    </ion-note>
+
+    <ion-item class="ion-margin-top">
+      <ion-label position="floating">Contraseña</ion-label>
+      <ion-input
+        type="password"
+        formControlName="contrasena"
+        autocomplete="off"
+      ></ion-input>
+    </ion-item>
+
+    <ion-button
+      expand="block"
+      class="ion-margin-top"
+      color="primary"
+      type="submit"
+      [disabled]="loginForm.invalid"
+    >
+      Ingresar
+    </ion-button>
+  </form>
+
+  <ion-footer class="ion-text-center ion-margin-top">
+    <ion-text color="medium">
+      <small>© 2025 Armada del Ecuador</small>
+    </ion-text>
+  </ion-footer>
+</ion-content>
