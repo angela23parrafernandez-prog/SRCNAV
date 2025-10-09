@@ -93,7 +93,7 @@ ion-button {
 
 
 .login-btn {
-  --background: #ffffff;     /* fondo blanco */
+  --background: #c5c2c2;     /* fondo blanco */
   --color: #0C1B2A;          /* texto azul marino institucional */
   --border-radius: 10px;
   --box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
@@ -109,4 +109,64 @@ ion-button {
   --background: #0C1B2A; /* se invierte */
   --color: #ffffff;
   transform: scale(1.02);
+}
+
+
+/* === MODO OSCURO PERSONALIZADO === */
+:host {
+  color-scheme: dark;
+}
+
+/* Fondo general del login */
+ion-content {
+  --background: #0C1B2A !important;
+}
+
+/* Campos (ion-item y ion-input) */
+ion-item {
+  --background: rgba(255, 255, 255, 0.08);
+  --border-color: rgba(255, 255, 255, 0.15);
+  --color: #ffffff; /* texto dentro */
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+}
+
+/* Input interno */
+ion-input {
+  color: #ffffff !important; /* texto dentro del input */
+  caret-color: #ffffff;
+}
+
+/* Placeholders o etiquetas */
+h4 {
+  color: #ffffff !important;
+}
+
+/* Nota de error */
+ion-note[color='danger'] {
+  color: #ff6b6b !important;
+  font-weight: 500;
+}
+
+/* Botón */
+.login-btn {
+  --background: #ffffff;
+  --color: #0C1B2A;
+}
+
+.login-btn:hover {
+  --background: #0C1B2A;
+  --color: #ffffff;
+  transform: scale(1.02);
+}
+
+/* === RESPONSIVE MOBILE === */
+@media (prefers-color-scheme: dark) {
+  ion-item {
+    --background: rgba(255, 255, 255, 0.08);
+    --color: #fff;
+  }
+  ion-input {
+    color: #fff !important;
+  }
 }

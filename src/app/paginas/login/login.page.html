@@ -10,9 +10,9 @@
 
       <!-- Formulario -->
       <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-        <h4 color="medium" class="footer-textt">Inicio sesión</h4>
+        <ion-label color="medium" class="footer-textt">Inicio sesión</ion-label>
         <ion-item>
-          <h4  position="floating">Cédula</h4>
+          <ion-label  position="floating">Cédula</ion-label>
           <ion-input
             type="text"
             maxlength="10"
@@ -30,7 +30,7 @@
         </ion-note>
 
         <ion-item class="ion-margin-top">
-          <h4 position="floating">Contraseña</h4>
+          <ion-label position="floating">Contraseña</ion-label>
           <ion-input
             type="password"
             formControlName="contrasena"
