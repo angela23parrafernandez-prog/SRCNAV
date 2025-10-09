@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
@@ -11,15 +11,17 @@ import { Auth } from 'src/app/servicios/auth';
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
 })
-export class MenuComponent {
+export class MenuComponent implements OnInit {  
   @Input() titulo = 'ARMADA DE COLOMBIA';
   usuario: any = null;
 
   constructor(private auth: Auth) {}
 
   ngOnInit() {
-    this.usuario = this.auth.getUsuario();
-    this.esAdmin();
+    //  Suscribirse al observable para actualizar automáticamente el usuario
+    this.auth.usuario$.subscribe((user) => {
+      this.usuario = user;
+    });
   }
 
   esAdmin(): boolean {

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import * as CryptoJS from 'crypto-js';
 const SECRET_KEY = 'mi-clave-super-secreta';
 
@@ -9,7 +9,10 @@ const SECRET_KEY = 'mi-clave-super-secreta';
 })
 export class Auth {
   public API_URL: string = 'http://localhost:3001';
+  
 
+  private usuarioSubject = new BehaviorSubject<any>(this.getUsuario());
+  usuario$ = this.usuarioSubject.asObservable();
   constructor(private http: HttpClient) {}
 
   /** Iniciar sesión con cédula y contraseña */
@@ -23,7 +26,7 @@ export class Auth {
           if (response?.token) {
             localStorage.setItem('token', response.token);
 
-            // ⚠️ Cifrado correcto
+            //  Cifrado correcto
             const encrypted = CryptoJS.AES.encrypt(
               JSON.stringify(response.usuario),
               SECRET_KEY
@@ -32,6 +35,7 @@ export class Auth {
             console.log('Encrypted usuario:', encrypted); // Debug
 
             localStorage.setItem('usuario', encrypted);
+            this.usuarioSubject.next(response.usuario);
           }
         })
       );
