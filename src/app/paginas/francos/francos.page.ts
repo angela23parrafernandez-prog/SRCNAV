@@ -24,9 +24,9 @@ export class FrancosPage implements OnInit {
   companiaSeleccionada = '';
   companias = [
     { id_compania: 1, nombre: 'Henao' },
-    { id_compania: 2, nombre: 'Acevedo' },
+    { id_compania: 4, nombre: 'Acevedo' },
     { id_compania: 3, nombre: 'Hayes' },
-    { id_compania: 4, nombre: 'Valverde' },
+ 
     { id_compania: 5, nombre: 'BGD' },
   ];
 
