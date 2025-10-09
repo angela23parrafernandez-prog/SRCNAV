@@ -19,6 +19,7 @@ export class MenuComponent {
 
   ngOnInit() {
     this.usuario = this.auth.getUsuario();
+    this.esAdmin();
   }
 
   esAdmin(): boolean {
