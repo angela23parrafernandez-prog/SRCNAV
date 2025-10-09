@@ -1,18 +1,16 @@
 <ion-header>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Sanidad </ion-title>
+  <ion-toolbar >
+GRUMETES   
     <ion-buttons slot="end">
       <ion-button [routerLink]="['/franco']">
         Añadir
-        <ion-icon slot="icon-only" name="add" color="black"></ion-icon>
+        <ion-icon  name="add" color="black"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true" class="ion-padding">
+  
   <ng-container *ngIf="loading; else lista">
     <div class="flex justify-center items-center h-full">
       <ion-spinner name="crescent"></ion-spinner>
@@ -29,7 +27,7 @@
             <strong>Compañía:</strong> {{
             getNombreCompania(franco.usuario?.id_compania) }}<br />
 
-            <!-- 👇 Solo cuando está ACTIVO -->
+            <!--  Solo cuando está ACTIVO -->
             <ng-container *ngIf="franco.estado === 'ACTIVO'">
               <strong>Estado:</strong> Excusado <br />
               <ng-container
@@ -46,7 +44,7 @@
               </ng-container>
             </ng-container>
 
-            <!-- 👇 Otros estados -->
+            <!--  Otros estados -->
             <ng-container *ngIf="franco.estado !== 'ACTIVO'">
               <strong>Estado:</strong> {{ franco.estado }}
             </ng-container>

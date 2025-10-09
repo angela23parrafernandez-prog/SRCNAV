@@ -1,0 +1,49 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px; /* ancho del menú */
+  height: 100vh; /* ocupar toda la altura */
+  background-color: #0c1b2a; /* color institucional */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 10px;
+}
+
+.logo-container {
+  width: 200px;
+  height: 250px;
+  margin-bottom: 15px;
+}
+
+
+
+.menu-list {
+  width: 100%;
+  padding-top: 10px;
+  background: transparent !important;
+
+}
+
+ion-item {
+  --color: #090000;
+  font-weight: 500;
+  margin: 4px 0;
+}
+

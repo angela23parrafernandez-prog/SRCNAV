@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -19,8 +19,7 @@ import {
   IonFooter,
   ToastController,
   LoadingController,
-  NavController,
-} from '@ionic/angular/standalone';
+  NavController, IonImg } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Auth } from 'src/app/servicios/auth';
 import { GeneralService } from 'src/app/servicios/general';
@@ -29,7 +28,7 @@ import { GeneralService } from 'src/app/servicios/general';
   standalone: true,
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
-  imports: [
+  imports: [IonImg, 
     CommonModule,
     ReactiveFormsModule,
     IonContent,
@@ -44,6 +43,7 @@ import { GeneralService } from 'src/app/servicios/general';
     IonLabel,
     IonFooter,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class LoginPage {
   private fb = inject(FormBuilder);

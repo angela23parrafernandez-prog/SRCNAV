@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { GeneralService } from '../servicios/general';
 import { Auth } from '../servicios/auth';
+import { MenuComponent } from '../componentes/menu/menu.component';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +13,9 @@ import { Auth } from '../servicios/auth';
   imports: [
     CommonModule,
     RouterModule, // ✅ necesario para routerLink
-    IonicModule, // ✅ IMPORTANTE: aquí está la clave
+    IonicModule,
+     MenuComponent
+
   ],
 })
 export class HomePage {

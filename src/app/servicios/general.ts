@@ -4,7 +4,7 @@ import { ToastController } from '@ionic/angular/standalone';
   providedIn: 'root',
 })
 export class GeneralService {
-  public APIURL = 'http://localhost:3000';
+  public APIURL = 'http://localhost:3001';
   constructor(private toastCtrl: ToastController) {}
 
   async showSuccess(message: string) {

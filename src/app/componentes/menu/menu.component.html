@@ -1,0 +1,31 @@
+<div class="sidebar">
+  <div class="header">
+    <h2>ARMADA DE COLOMBIA</h2>
+  </div>
+
+  <div class="logo-container">
+    <img src="assets/img/logo.webp" alt="Logo Armada" class="logo" />
+  </div>
+
+  <ion-list lines="none" class="menu-list">
+    <ion-item routerLink="/francos" button detail="false">
+      <ion-icon slot="start" name="medkit-outline"></ion-icon>
+      <ion-label>Sanidad</ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/guardia" button detail="false">
+      <ion-icon slot="start" name="shield-outline"></ion-icon>
+      <ion-label>Guardia</ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="esAdmin()" routerLink="/usuarios" button detail="false">
+      <ion-icon slot="start" name="people-outline"></ion-icon>
+      <ion-label>Usuarios</ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/login" (click)="cerrarSesion()" button detail="false">
+      <ion-icon slot="start" name="log-out-outline"></ion-icon>
+      <ion-label>Cerrar sesión</ion-label>
+    </ion-item>
+  </ion-list>
+</div>

@@ -12,6 +12,7 @@ import { Router, RouterModule } from '@angular/router';
 import { UsuariosService } from 'src/app/servicios/usuarios';
 import { IonicModule } from '@ionic/angular';
 import { GeneralService } from 'src/app/servicios/general';
+import { MenuComponent } from 'src/app/componentes/menu/menu.component';
 
 @Component({
   selector: 'app-usuario',
@@ -23,7 +24,7 @@ import { GeneralService } from 'src/app/servicios/general';
     CommonModule,
     RouterModule,
     FormsModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule,MenuComponent
   ],
 })
 export class UsuarioPage implements OnInit {
@@ -38,7 +39,7 @@ export class UsuarioPage implements OnInit {
   ];
 
   especialidades = [
-    { id_especialidad: 1, descripcion: 'Meteorología' },
+    { id_especialidad: 1, descripcion: 'Naviera' },
     { id_especialidad: 2, descripcion: 'Oceanografía Física' },
   ];
 

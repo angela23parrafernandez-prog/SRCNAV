@@ -37,7 +37,7 @@ export class UsuariosPage implements OnInit {
     { id_grado: 2, descripcion: 'GN2' },
   ];
   especialidades = [
-    { id_especialidad: 1, descripcion: 'Meteorología' },
+    { id_especialidad: 1, descripcion: 'Naviera' },
     { id_especialidad: 2, descripcion: 'Oceanografía Física' },
   ];
   secciones = [
@@ -47,9 +47,9 @@ export class UsuariosPage implements OnInit {
   ];
   companias = [
     { id_compania: 1, nombre: 'Henao' },
-    { id_compania: 2, nombre: 'Acevedo' },
+    { id_compania: 4, nombre: 'Acevedo' },
     { id_compania: 3, nombre: 'Hayes' },
-    { id_compania: 4, nombre: 'Valverde' },
+  
     { id_compania: 5, nombre: 'BGD' },
   ];
 

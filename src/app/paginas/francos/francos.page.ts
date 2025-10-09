@@ -5,13 +5,14 @@ import { IonicModule } from '@ionic/angular';
 
 import { FrancosService } from 'src/app/servicios/francos';
 import { Router, RouterLink } from '@angular/router';
+import { MenuComponent } from 'src/app/componentes/menu/menu.component';
 
 @Component({
   selector: 'app-francos',
   templateUrl: './francos.page.html',
   styleUrls: ['./francos.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterLink],
+  imports: [IonicModule, CommonModule, FormsModule, RouterLink,  MenuComponent],
 })
 export class FrancosPage implements OnInit {
   private francoService = inject(FrancosService);

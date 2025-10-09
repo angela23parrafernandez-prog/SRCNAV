@@ -1,0 +1,112 @@
+ion-toolbar {
+  --background: #0C1B2A;
+  color: #ffffff;
+}
+
+/* Contenedor que centra todo */
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background: #f4f6f9;
+  padding: 20px;
+}
+
+/* Tarjeta principal */
+.login-card {
+  background: #0C1B2A;
+  padding: 35px 40px;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+
+/* Logo */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logo-container ion-img {
+  height: 100px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Campos y botones */
+ion-item {
+  --background: #ffffff;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+ion-button {
+  --border-radius: 10px;
+  font-weight: bold;
+  letter-spacing: 0.6px;
+  margin-top: 15px;
+}
+
+/* Footer */
+.footer-text {
+  display: block;
+  margin-top: 25px;
+  font-size: 0.85rem;
+  color: #777;
+}
+.footer-textt {
+  display: block;
+  margin-top: 25px;
+  font-size: 1.5rem;
+  color: #f3efef;
+}
+
+/* Animación suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 25px 25px;
+    max-width: 320px;
+  }
+  .logo-container ion-img {
+    height: 80px;
+  }
+}
+
+
+.login-btn {
+  --background: #ffffff;     /* fondo blanco */
+  --color: #0C1B2A;          /* texto azul marino institucional */
+  --border-radius: 10px;
+  --box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  border: 2px solid #0C1B2A; /* borde azul */
+  font-weight: bold;
+  letter-spacing: 0.6px;
+  margin-top: 15px;
+  transition: all 0.25s ease-in-out;
+}
+
+/* Efecto hover (cuando pasa el mouse) */
+.login-btn:hover {
+  --background: #0C1B2A; /* se invierte */
+  --color: #ffffff;
+  transform: scale(1.02);
+}

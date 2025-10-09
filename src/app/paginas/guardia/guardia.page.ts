@@ -18,11 +18,8 @@ export class GuardiaPage implements OnInit {
 
   guardias: any[] = [];
   companias = [
-    { id: 1, nombre: 'Henao' },
-    { id: 2, nombre: 'Acevedo' },
-    { id: 3, nombre: 'Hayes' },
-    { id: 4, nombre: 'Valverde' },
-    { id: 5, nombre: 'BGD' },
+
+    { id: 1, nombre: 'BGD' },
   ];
 
   nombre = '';

@@ -8,7 +8,7 @@ const SECRET_KEY = 'mi-clave-super-secreta';
   providedIn: 'root',
 })
 export class Auth {
-  public API_URL: string = 'http://localhost:3000';
+  public API_URL: string = 'http://localhost:3001';
 
   constructor(private http: HttpClient) {}
 

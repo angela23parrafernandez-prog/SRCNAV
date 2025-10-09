@@ -1,8 +1,6 @@
 <ion-header>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/francos"></ion-back-button>
-    </ion-buttons>
+  <ion-toolbar >
+  
     <ion-title>
       {{ isEdit ? 'Editar Sanidad' : 'Registrar Sanidad' }}
     </ion-title>
@@ -95,7 +93,7 @@
 
       <!-- BOTONES -->
       <div class="ion-padding">
-        <ion-button expand="block" type="submit" [disabled]="loading">
+        <ion-button color="secondary" type="submit" [disabled]="loading">
           <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
           <span *ngIf="!loading"
             >{{ isEdit ? 'Actualizar Registro' : 'Guardar Registro' }}</span
@@ -103,7 +101,7 @@
         </ion-button>
 
         <ion-button
-          expand="block"
+         
           fill="outline"
           color="medium"
           routerLink="/francos"
