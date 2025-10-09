@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar >
-GRUMETES   
+   GRUMETES   
     <ion-buttons slot="end">
       <ion-button [routerLink]="['/franco']">
         Añadir
@@ -8,6 +8,29 @@ GRUMETES
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-item lines="none">
+  <ion-label>Filtrar por mes</ion-label>
+  <ion-select [(ngModel)]="mesSeleccionado" (ionChange)="filtrarFrancos()">
+    <ion-select-option value="">Todos</ion-select-option>
+    <ion-select-option *ngFor="let m of meses" [value]="m.valor">
+      {{ m.nombre }}
+    </ion-select-option>
+  </ion-select>
+</ion-item>
+
+<ion-item lines="none">
+  <ion-label>Filtrar por compañía</ion-label>
+  <ion-select [(ngModel)]="companiaSeleccionada" (ionChange)="filtrarFrancos()">
+    <ion-select-option value="">Todas</ion-select-option>
+    <ion-select-option
+      *ngFor="let c of companias"
+      [value]="c.id_compania"
+    >
+      {{ c.nombre }}
+    </ion-select-option>
+  </ion-select>
+</ion-item>
+
 </ion-header>
 <ion-content [fullscreen]="true" class="ion-padding">
   
@@ -18,8 +41,8 @@ GRUMETES
   </ng-container>
 
   <ng-template #lista>
-    <ion-list *ngIf="francos.length > 0; else vacio">
-      <ion-item *ngFor="let franco of francos" (click)="verDetalle(franco)">
+    <ion-list *ngIf="francosFiltrados.length > 0; else vacio">
+  <ion-item *ngFor="let franco of francosFiltrados" (click)="verDetalle(franco)">
         <ion-label>
           <h2>{{ franco.usuario?.nombre }} {{ franco.usuario?.apellido }}</h2>
           <p>
