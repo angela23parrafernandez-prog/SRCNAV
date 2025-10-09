@@ -23,6 +23,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Auth } from 'src/app/servicios/auth';
+import { GeneralService } from 'src/app/servicios/general';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -31,7 +32,6 @@ import { Auth } from 'src/app/servicios/auth';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    // 👇 Agrega todos los componentes que usas en el HTML
     IonContent,
     IonHeader,
     IonTitle,
@@ -51,6 +51,7 @@ export class LoginPage {
   private navCtrl = inject(NavController);
   private toastCtrl = inject(ToastController);
   private loadingCtrl = inject(LoadingController);
+  private generalService = inject(GeneralService);
 
   loginForm: FormGroup = this.fb.group({
     cedula: [
@@ -60,19 +61,11 @@ export class LoginPage {
     contrasena: ['', [Validators.required]],
   });
 
-  async showToast(message: string, color: string = 'danger') {
-    const toast = await this.toastCtrl.create({
-      message,
-      duration: 2500,
-      color,
-      position: 'bottom',
-    });
-    toast.present();
-  }
-
   async onLogin() {
     if (this.loginForm.invalid) {
-      this.showToast('Por favor complete todos los campos correctamente');
+      this.generalService.showError(
+        'Por favor complete todos los campos correctamente'
+      );
       return;
     }
 
@@ -87,14 +80,14 @@ export class LoginPage {
     this.authService.login(cedula, contrasena).subscribe({
       next: async (res) => {
         await loading.dismiss();
-        this.showToast('Inicio de sesión exitoso', 'success');
+        this.generalService.showSuccess('Inicio de sesión exitoso');
         this.navCtrl.navigateRoot('/home');
       },
       error: async (err) => {
         await loading.dismiss();
         const msg =
           err.error?.message || 'Credenciales inválidas o error de conexión';
-        this.showToast(msg, 'danger');
+        this.generalService.showError(msg);
       },
     });
   }

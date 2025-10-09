@@ -1,20 +1,62 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center">ARMADA DE COLOMBIA</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- LOGO -->
+  <ion-img
+    src="assets/logo-armada.jpg"
+    alt="Logo Armada"
+    style="max-width: 180px; margin: 20px auto"
+  ></ion-img>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <h2 class="ion-text-center">Bienvenido al Sistema</h2>
+  <p class="ion-text-center ion-margin-bottom">
+    Seleccione una de las opciones disponibles:
+  </p>
+
+  <!-- GRID DE CARDS -->
+  <ion-grid fixed>
+    <ion-row>
+      <!-- Solo visible para ADMIN -->
+      <ion-col size="12" size-md="6" size-lg="4" *ngIf="esAdmin()">
+        <ion-card routerLink="/usuarios" color="primary" button>
+          <ion-card-header>
+            <ion-icon name="people-outline" size="large"></ion-icon>
+            <ion-card-title>Usuarios</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+
+      <!-- Todos pueden ver Sanidad -->
+      <ion-col size="12" size-md="6" size-lg="4">
+        <ion-card routerLink="/francos" color="success" button>
+          <ion-card-header>
+            <ion-icon name="medkit-outline" size="large"></ion-icon>
+            <ion-card-title>Sanidad</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+      <ion-col size="12" size-md="6" size-lg="4">
+        <ion-card routerLink="/guardia" color="warning" button>
+          <ion-card-header>
+            <ion-icon name="medkit-outline" size="large"></ion-icon>
+            <ion-card-title>Guardia</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+
+      <!-- Cerrar sesión -->
+      <ion-col size="12" size-md="6" size-lg="4">
+        <ion-card routerLink="/login" color="danger" button>
+          <ion-card-header>
+            <ion-icon name="log-out-outline" size="large"></ion-icon>
+            <ion-card-title>Cerrar Sesión</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

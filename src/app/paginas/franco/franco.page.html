@@ -1,0 +1,116 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/francos"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{ isEdit ? 'Editar Sanidad' : 'Registrar Sanidad' }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <ion-list>
+      <!-- CÉDULA -->
+      <ion-item>
+        <ion-label position="stacked">Cédula</ion-label>
+        <ion-input
+          formControlName="cedula"
+          [readonly]="isEdit"
+          placeholder="Ej: 0923456789"
+        ></ion-input>
+      </ion-item>
+
+      <!-- DATOS DE USUARIO (solo edición) -->
+      <ion-item *ngIf="isEdit">
+        <ion-label position="stacked">Nombre</ion-label>
+        <ion-input formControlName="nombre" readonly></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="isEdit">
+        <ion-label position="stacked">Apellido</ion-label>
+        <ion-input formControlName="apellido" readonly></ion-input>
+      </ion-item>
+
+      <!-- ✅ RAZÓN: solo visible si el estado es ACTIVO -->
+      <ion-item *ngIf="form.get('estado')?.value == 'ACTIVO'">
+        <ion-label position="stacked">Razón</ion-label>
+        <ion-select
+          formControlName="id_razon"
+          interface="popover"
+          placeholder="Selecciona una razón"
+        >
+          <ion-select-option
+            *ngFor="let razon of razones"
+            [value]="razon.id_razon"
+          >
+            {{ razon.descripcion }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- FECHAS -->
+      <ion-item *ngIf="form.get('estado')?.value == 'ACTIVO'">
+        <ion-label position="stacked">Fecha de inicio</ion-label>
+        <ion-input
+          type="date"
+          formControlName="fecha_inicio"
+          [readonly]="form.get('estado')?.value !== 'ACTIVO'"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="form.get('estado')?.value == 'ACTIVO'">
+        <ion-label position="stacked">Fecha de fin</ion-label>
+        <ion-input
+          type="date"
+          formControlName="fecha_fin"
+          [readonly]="form.get('estado')?.value !== 'ACTIVO'"
+        ></ion-input>
+      </ion-item>
+
+      <!-- OBSERVACIÓN -->
+      <ion-item>
+        <ion-label position="stacked">Observación</ion-label>
+        <ion-textarea
+          formControlName="observacion"
+          placeholder="Observación o detalle médico..."
+        ></ion-textarea>
+      </ion-item>
+
+      <!-- ESTADO -->
+      <ion-item *ngIf="isEdit">
+        <ion-label position="stacked">Estado</ion-label>
+        <ion-select
+          formControlName="estado"
+          interface="popover"
+          placeholder="Selecciona estado"
+          (ionChange)="onEstadoChange($event)"
+        >
+          <ion-select-option *ngFor="let e of estados" [value]="e">
+            {{ e === 'ACTIVO' ? 'EXCUSADO' : e }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- BOTONES -->
+      <div class="ion-padding">
+        <ion-button expand="block" type="submit" [disabled]="loading">
+          <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+          <span *ngIf="!loading"
+            >{{ isEdit ? 'Actualizar Registro' : 'Guardar Registro' }}</span
+          >
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="medium"
+          routerLink="/francos"
+        >
+          Cancelar
+        </ion-button>
+      </div>
+    </ion-list>
+  </form>
+</ion-content>

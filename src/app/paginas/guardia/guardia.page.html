@@ -1,0 +1,83 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Guardias</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- 🔹 FORMULARIO DE REGISTRO -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Registrar Guardia</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Nombre</ion-label>
+        <ion-input
+          [(ngModel)]="nombre"
+          placeholder="Ej: Gustavo Cisneros"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Compañía</ion-label>
+        <ion-select
+          [(ngModel)]="compania"
+          placeholder="Selecciona una compañía"
+          interface="popover"
+        >
+          <ion-select-option *ngFor="let c of companias" [value]="c.nombre"
+            >{{ c.nombre }}</ion-select-option
+          >
+        </ion-select>
+      </ion-item>
+
+      <ion-text
+        *ngIf="!puedeMarcar && horasRestantes > 0"
+        color="warning"
+        class="ion-text-center"
+      >
+        Próxima marcación disponible en {{ horasRestantes }} horas ⏳
+      </ion-text>
+
+      <ion-button
+        expand="block"
+        color="primary"
+        class="ion-margin-top"
+        (click)="registrarGuardia()"
+        [disabled]="!puedeMarcar"
+      >
+        <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
+        Marcar Guardia
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- 🔹 LISTA DE GUARDIAS -->
+  <ion-card *ngIf="guardias.length > 0">
+    <ion-card-header>
+      <ion-card-title>Historial de Guardias</ion-card-title>
+    </ion-card-header>
+
+    <ion-list>
+      <ion-item *ngFor="let g of guardias">
+        <ion-label>
+          <h2>{{ g.nombre }}</h2>
+          <p>
+            <strong>Compañía:</strong> {{ g.compania }}<br />
+            <strong>Fecha:</strong>
+            {{ g.hora_registro | date: 'dd/MM/yyyy HH:mm' }}
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
+  <div *ngIf="guardias.length === 0" class="ion-text-center ion-margin-top">
+    <p>No hay guardias registradas.</p>
+  </div>
+</ion-content>

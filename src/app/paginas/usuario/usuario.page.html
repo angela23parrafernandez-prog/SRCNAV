@@ -1,0 +1,148 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <!-- Botón de regresar -->
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/usuarios"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit ? 'Editar Usuario' : 'Nuevo Usuario' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">Cédula</ion-label>
+        <ion-input
+          formControlName="cedula"
+          [readonly]="isEdit"
+          placeholder="Ej: 0923456789"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Nombre</ion-label>
+        <ion-input formControlName="nombre"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Apellido</ion-label>
+        <ion-input formControlName="apellido"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Teléfono</ion-label>
+        <ion-input formControlName="telefono"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Correo</ion-label>
+        <ion-input type="email" formControlName="correo"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="!isEdit">
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input type="password" formControlName="contrasena"></ion-input>
+      </ion-item>
+
+      <!-- ROL -->
+      <ion-item>
+        <ion-label position="stacked">Rol</ion-label>
+        <ion-select
+          formControlName="id_rol"
+          interface="popover"
+          placeholder="Selecciona un rol"
+        >
+          <ion-select-option *ngFor="let rol of roles" [value]="rol.id_rol">
+            {{ rol.descripcion }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- GRADO -->
+      <ion-item>
+        <ion-label position="stacked">Grado</ion-label>
+        <ion-select
+          formControlName="id_grado"
+          interface="popover"
+          placeholder="Selecciona un grado"
+        >
+          <ion-select-option
+            *ngFor="let grado of grados"
+            [value]="grado.id_grado"
+          >
+            {{ grado.descripcion }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- ESPECIALIDAD -->
+      <ion-item>
+        <ion-label position="stacked">Especialidad</ion-label>
+        <ion-select
+          formControlName="id_especialidad"
+          interface="popover"
+          placeholder="Selecciona una especialidad"
+        >
+          <ion-select-option
+            *ngFor="let esp of especialidades"
+            [value]="esp.id_especialidad"
+          >
+            {{ esp.descripcion }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- SECCIÓN -->
+      <ion-item>
+        <ion-label position="stacked">Compañía</ion-label>
+        <ion-select
+          formControlName="id_compania"
+          interface="popover"
+          placeholder="Selecciona una compañía"
+        >
+          <ion-select-option
+            *ngFor="let comp of companias"
+            [value]="comp.id_compania"
+          >
+            {{ comp.nombre }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Sección</ion-label>
+        <ion-select
+          formControlName="id_seccion"
+          interface="popover"
+          placeholder="Selecciona una sección"
+        >
+          <ion-select-option
+            *ngFor="let sec of secciones"
+            [value]="sec.id_seccion"
+          >
+            {{ sec.descripcion }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Botones -->
+      <div class="ion-padding">
+        <ion-button expand="block" type="submit" [disabled]="loading">
+          <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+          <span *ngIf="!loading">
+            {{ isEdit ? 'Actualizar' : 'Guardar' }}
+          </span>
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="medium"
+          routerLink="/usuarios"
+        >
+          Cancelar
+        </ion-button>
+      </div>
+    </ion-list>
+  </form>
+</ion-content>

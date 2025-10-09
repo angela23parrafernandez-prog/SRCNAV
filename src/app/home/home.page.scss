@@ -1,27 +1,55 @@
-#container {
+/* 🎨 Paleta Armada de Colombia */
+:root {
+  --color-azul-oscuro: #0a2342;
+  --color-verde-militar: #2e473b;
+  --color-rojo-serio: #7b1e1e;
+  --color-dorado: #d4af37;
+}
+
+.background-armada {
+  --background: linear-gradient(to bottom, #0a2342, #1b1f2f);
+  color: white;
+}
+
+.titulo-principal {
+  font-weight: 600;
+  color: var(--color-dorado);
+  margin-top: 10px;
+  letter-spacing: 1px;
+}
+
+.subtitulo {
+  font-size: 15px;
+  color: #e0e0e0;
+  margin-bottom: 30px;
+}
+
+.card-opcion {
   text-align: center;
+  border-radius: 16px;
+  color: white;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  ion-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 25px 0;
+  }
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  ion-card-title {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  &:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  }
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+.icono-opcion {
+  font-size: 48px;
+  color: var(--color-dorado);
 }
