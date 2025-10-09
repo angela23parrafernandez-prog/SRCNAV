@@ -26,7 +26,6 @@ export class FrancosPage implements OnInit {
     { id_compania: 1, nombre: 'Henao' },
     { id_compania: 4, nombre: 'Acevedo' },
     { id_compania: 3, nombre: 'Hayes' },
- 
     { id_compania: 5, nombre: 'BGD' },
   ];
 
@@ -56,9 +55,11 @@ export class FrancosPage implements OnInit {
   cargarFrancos() {
     this.francoService.getFrancosActivos().subscribe({
       next: (data) => {
-        this.francos = data;
-        this.loading = false;
-      },
+      this.francos = data;
+      this.francosFiltrados = [...data]; 
+      this.loading = false;
+    },
+
       error: (err) => {
         console.error('Error al cargar sanidad:', err);
         this.loading = false;
