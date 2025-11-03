@@ -1,8 +1,9 @@
+
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FrancosService } from 'src/app/servicios/francos';
 
 @Component({
@@ -14,7 +15,7 @@ import { FrancosService } from 'src/app/servicios/francos';
 })
 export class FrancosPage implements OnInit {
   private francoService = inject(FrancosService);
-
+  private router = inject(Router);
   francos: any[] = [];
   grupos: any[] = [];
   loading = true;
@@ -147,4 +148,35 @@ export class FrancosPage implements OnInit {
     }
     return { tipo: 'retraso', valor: Math.abs(Math.ceil(diffDias)) };
   }
+
+    calcularDuracion(fechaInicio: string, fechaFin: string): number {
+    const [y1, m1, d1] = fechaInicio.split('-').map(Number);
+    const [y2, m2, d2] = fechaFin.split('-').map(Number);
+    const inicio = new Date(y1, m1 - 1, d1);
+    const fin = new Date(y2, m2 - 1, d2);
+    const diffMs = fin.getTime() - inicio.getTime();
+    const diffDias = Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1; // incluir día inicial
+    return diffDias;
+  }
+
+   calcularTotalDias(francos: any[]): number {
+    let total = 0;
+    francos.forEach((f) => {
+      if (f.fecha_inicio && f.fecha_fin) {
+        total += this.calcularDuracion(f.fecha_inicio, f.fecha_fin);
+      }
+    });
+    return total;
+  }
+
+
+  verDetalle(franco: any) {
+    console.log(franco);
+    this.router.navigate(['/franco'], {
+      state: { francoSeleccionado: franco },
+    });
+  }
+
 }
+
+

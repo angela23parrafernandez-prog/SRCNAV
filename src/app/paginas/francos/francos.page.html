@@ -144,24 +144,61 @@
           </ion-badge>
         </ion-item>
 
-        <!-- Lista desplegable de excusas -->
-        <div *ngIf="grupo.abierto" class="bg-zinc-700 p-3 rounded-b-lg">
-          <ion-item
-            *ngFor="let franco of grupo.francos"
-            color="medium"
-            lines="none"
-            detail="false"
-          >
-            <ion-label>
-              <p>
-                <strong>Estado:</strong> {{ franco.estado }}<br />
-                <strong>Fecha inicio:</strong> {{ franco.fecha_inicio }}<br />
-                <strong>Fecha fin:</strong> {{ franco.fecha_fin }}<br />
-                <strong *ngIf="franco.observacion">Observación:</strong> {{ franco.observacion }}
-              </p>
-            </ion-label>
-          </ion-item>
-        </div>
+     
+<!-- Lista desplegable de excusas -->
+<div *ngIf="grupo.abierto" class="bg-zinc-700 p-3 rounded-b-lg">
+  <ion-item
+    *ngFor="let franco of grupo.francos"
+    color="medium"
+    lines="none"
+    detail="true"
+    button
+    (click)="verDetalle(franco)"
+  >
+    <ion-label>
+      <p>
+        <strong>Estado:</strong> {{ franco.estado }}<br />
+        <strong>Fecha inicio:</strong> {{ franco.fecha_inicio }}<br />
+        <strong>Fecha fin:</strong> {{ franco.fecha_fin }}<br />
+
+        <ng-container *ngIf="franco.estado === 'ACTIVO'; else duracion">
+          <strong>Tiempo restante:</strong>
+          <ng-container [ngSwitch]="calcularTiempoRestante(franco.fecha_fin).tipo">
+            <span *ngSwitchCase="'dias'">
+              {{ calcularTiempoRestante(franco.fecha_fin).valor }} días restantes
+            </span>
+            <span *ngSwitchCase="'horas'">
+              {{ calcularTiempoRestante(franco.fecha_fin).valor }} horas restantes
+            </span>
+            <span *ngSwitchCase="'retraso'">
+              {{ calcularTiempoRestante(franco.fecha_fin).valor }} días de retraso
+            </span>
+          </ng-container>
+        </ng-container>
+
+        <!-- Duración total para los que no están activos -->
+        <ng-template #duracion>
+          <strong>Duración:</strong>
+          {{ calcularDuracion(franco.fecha_inicio, franco.fecha_fin) }} días
+        </ng-template>
+
+        <strong *ngIf="franco.observacion"><br />Observación:</strong>
+        {{ franco.observacion }}
+      </p>
+    </ion-label>
+  </ion-item>
+
+  <!-- TOTAL acumulado -->
+  <ion-item color="dark" lines="none">
+    <ion-label class="ion-text-end">
+      <ion-badge color="tertiary">
+        Total excusado: {{ calcularTotalDias(grupo.francos) }} días
+      </ion-badge>
+    </ion-label>
+  </ion-item>
+</div>
+
+
       </ion-item-group>
     </ion-list>
 
