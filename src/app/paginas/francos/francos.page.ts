@@ -2,10 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-
+import { RouterLink } from '@angular/router';
 import { FrancosService } from 'src/app/servicios/francos';
-import { Router, RouterLink } from '@angular/router';
-import { MenuComponent } from 'src/app/componentes/menu/menu.component';
 
 @Component({
   selector: 'app-francos',
@@ -16,12 +14,18 @@ import { MenuComponent } from 'src/app/componentes/menu/menu.component';
 })
 export class FrancosPage implements OnInit {
   private francoService = inject(FrancosService);
-  private router = inject(Router);
-  francosFiltrados: any[] = [];
+
   francos: any[] = [];
+  grupos: any[] = [];
   loading = true;
+
+  // Filtros
+  diaSeleccionado = '';
   mesSeleccionado = '';
+  anioSeleccionado = '';
   companiaSeleccionada = '';
+  estadoSeleccionado = '';
+
   companias = [
     { id_compania: 1, nombre: 'Henao' },
     { id_compania: 4, nombre: 'Acevedo' },
@@ -44,60 +48,81 @@ export class FrancosPage implements OnInit {
     { nombre: 'Diciembre', valor: 12 },
   ];
 
-  
+  dias = Array.from({ length: 31 }, (_, i) => i + 1);
+  anios = [2024, 2025, 2026];
+
   ngOnInit() {
     this.cargarFrancos();
   }
+
   ionViewWillEnter() {
     this.cargarFrancos();
   }
-  /** Cargar francos activos o pendientes */
+
   cargarFrancos() {
     this.francoService.getFrancosActivos().subscribe({
       next: (data) => {
-      this.francos = data;
-      this.francosFiltrados = [...data]; 
-      this.loading = false;
-    },
-
+        this.francos = data;
+        this.filtrarFrancos();
+        this.loading = false;
+      },
       error: (err) => {
-        console.error('Error al cargar sanidad:', err);
+        console.error('Error al cargar francos:', err);
         this.loading = false;
       },
     });
   }
 
-  /**  Ir al detalle del usuario seleccionado */
-  verDetalle(franco: any) {
-    console.log(franco);
-    this.router.navigate(['/franco'], {
-      state: { francoSeleccionado: franco },
+  filtrarFrancos() {
+    const filtrados = this.francos.filter((f) => {
+      const fecha = new Date(f.fecha_fin);
+      const dia = fecha.getDate();
+      const mes = fecha.getMonth() + 1;
+      const anio = fecha.getFullYear();
+
+      const companiaOK =
+        !this.companiaSeleccionada ||
+        f.usuario?.id_compania === Number(this.companiaSeleccionada);
+      const mesOK = !this.mesSeleccionado || mes === Number(this.mesSeleccionado);
+      const diaOK = !this.diaSeleccionado || dia === Number(this.diaSeleccionado);
+      const anioOK = !this.anioSeleccionado || anio === Number(this.anioSeleccionado);
+      const estadoOK = !this.estadoSeleccionado || f.estado === this.estadoSeleccionado;
+
+      return companiaOK && mesOK && diaOK && anioOK && estadoOK;
     });
+
+    this.grupos = this.agruparPorPersona(filtrados);
   }
-  calcularTiempoRestante(fechaFin: string): {
-    tipo: 'dias' | 'horas' | 'retraso';
-    valor: number;
-  } {
-    const ahora = new Date();
 
-    //  Parseo correcto en zona local (evita desfase UTC)
-    const [year, month, day] = fechaFin.split('-').map(Number);
-    const fin = new Date(year, month - 1, day, 23, 59, 59); // último segundo del día
+  agruparPorPersona(francos: any[]) {
+    const grupos: any[] = [];
+    const mapa = new Map<string, any>();
 
-    const diferenciaMs = fin.getTime() - ahora.getTime();
-    const diferenciaHoras = diferenciaMs / (1000 * 60 * 60);
-    const diferenciaDias = diferenciaMs / (1000 * 60 * 60 * 24);
-
-    if (diferenciaMs > 0) {
-      if (diferenciaHoras < 24) {
-        return { tipo: 'horas', valor: Math.floor(diferenciaHoras) };
-      } else {
-        return { tipo: 'dias', valor: Math.ceil(diferenciaDias) };
+    francos.forEach((f) => {
+      const key = `${f.usuario?.cedula}-${f.usuario?.nombre}-${f.usuario?.apellido}`;
+      if (!mapa.has(key)) {
+        mapa.set(key, {
+          cedula: f.usuario?.cedula,
+          nombre: f.usuario?.nombre,
+          apellido: f.usuario?.apellido,
+          compania: this.getNombreCompania(f.usuario?.id_compania),
+          francos: [],
+          francoActivo: null,
+          abierto: false,
+        });
       }
-    } else {
-      //  Ya pasó la fecha → días de retraso
-      return { tipo: 'retraso', valor: Math.abs(Math.ceil(diferenciaDias)) };
-    }
+      mapa.get(key).francos.push(f);
+      if (f.estado === 'ACTIVO') {
+        mapa.get(key).francoActivo = f;
+      }
+    });
+
+    mapa.forEach((v) => grupos.push(v));
+    return grupos;
+  }
+
+  toggleGrupo(grupo: any) {
+    grupo.abierto = !grupo.abierto;
   }
 
   getNombreCompania(id: number): string {
@@ -105,16 +130,21 @@ export class FrancosPage implements OnInit {
     return comp ? comp.nombre : 'Sin compañía';
   }
 
+  calcularTiempoRestante(fechaFin: string): {
+    tipo: 'dias' | 'horas' | 'retraso';
+    valor: number;
+  } {
+    const ahora = new Date();
+    const [year, month, day] = fechaFin.split('-').map(Number);
+    const fin = new Date(year, month - 1, day, 23, 59, 59);
+    const diffMs = fin.getTime() - ahora.getTime();
+    const diffHoras = diffMs / (1000 * 60 * 60);
+    const diffDias = diffMs / (1000 * 60 * 60 * 24);
 
-   filtrarFrancos() {
-    this.francosFiltrados = this.francos.filter((f) => {
-      const fecha = new Date(f.fecha_fin);
-      const mes = fecha.getMonth() + 1; // enero = 1
-      const companiaOK =
-        !this.companiaSeleccionada ||
-        f.usuario?.id_compania === Number(this.companiaSeleccionada);
-      const mesOK = !this.mesSeleccionado || mes === Number(this.mesSeleccionado);
-      return companiaOK && mesOK;
-    });
+    if (diffMs > 0) {
+      if (diffHoras < 24) return { tipo: 'horas', valor: Math.floor(diffHoras) };
+      return { tipo: 'dias', valor: Math.ceil(diffDias) };
+    }
+    return { tipo: 'retraso', valor: Math.abs(Math.ceil(diffDias)) };
   }
 }
