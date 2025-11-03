@@ -4,6 +4,14 @@
     <ion-buttons slot="end">
   <ion-button [routerLink]="['/usuario']" fill="clear" class="icono-blanco">+ Nuevo
 </ion-button>
+<ion-toolbar color="light">
+  <ion-buttons slot="end">
+    <ion-button color="success" fill="outline" (click)="exportarExcel()">
+      <ion-icon name="download-outline" slot="start"></ion-icon>
+      Exportar Excel
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar>
 
 
 

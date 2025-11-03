@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router, RouterLink } from '@angular/router';
 import { FrancosService } from 'src/app/servicios/francos';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-francos',
@@ -176,6 +178,75 @@ export class FrancosPage implements OnInit {
       state: { francoSeleccionado: franco },
     });
   }
+
+exportarExcel() {
+  // Si hay filtros aplicados, exportamos lo filtrado; si no, todo
+  const datosExportar = this.grupos.length > 0 ? this.grupos : this.agruparPorPersona(this.francos);
+
+  if (datosExportar.length === 0) {
+    alert('No hay datos para exportar.');
+    return;
+  }
+
+  // 🔄 Transformar datos en filas planas sin usar flatMap()
+  const filas: any[] = [];
+  datosExportar.forEach((grupo) => {
+    grupo.francos.forEach((f: any) => {
+      filas.push({
+        Cédula: grupo.cedula,
+        Nombre: `${grupo.nombre} ${grupo.apellido}`,
+        Compañía: grupo.compania,
+        Estado: f.estado,
+        'Fecha inicio': f.fecha_inicio,
+        'Fecha fin': f.fecha_fin,
+        'Duración (días)': this.calcularDuracion(f.fecha_inicio, f.fecha_fin),
+        Observación: f.observacion || '',
+      });
+    });
+  });
+
+  // 🧾 Crear hoja y libro Excel
+  const hoja = XLSX.utils.json_to_sheet(filas);
+
+  // Opcional: ajustar ancho automático de columnas
+  const maxLengths = Object.keys(filas[0]).map((key) =>
+    Math.max(key.length, ...filas.map((row) => (row[key] ? row[key].toString().length : 0)))
+  );
+  hoja['!cols'] = maxLengths.map((w) => ({ wch: w + 2 }));
+
+  const libro = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(libro, hoja, 'Francos');
+
+  // 📁 Nombre dinámico del archivo
+  const nombreArchivo = this.obtenerNombreArchivo();
+
+  // 💾 Guardar archivo Excel
+  const buffer = XLSX.write(libro, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([buffer], { type: 'application/octet-stream' });
+  saveAs(blob, nombreArchivo);
+}
+
+private obtenerNombreArchivo(): string {
+  const fecha = new Date();
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+  const anio = fecha.getFullYear();
+
+  let nombre = `francos_${anio}-${mes}-${dia}`;
+  const filtros = [];
+
+  if (this.mesSeleccionado) filtros.push(`mes${this.mesSeleccionado}`);
+  if (this.diaSeleccionado) filtros.push(`dia${this.diaSeleccionado}`);
+  if (this.companiaSeleccionada) filtros.push(`comp${this.companiaSeleccionada}`);
+  if (this.estadoSeleccionado) filtros.push(this.estadoSeleccionado);
+
+  if (filtros.length > 0) {
+    nombre += '_' + filtros.join('_');
+  }
+
+  return `${nombre}.xlsx`;
+}
+
 
 }
 
