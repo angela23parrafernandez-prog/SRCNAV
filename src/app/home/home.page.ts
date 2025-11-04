@@ -12,9 +12,8 @@ import { MenuComponent } from '../componentes/menu/menu.component';
   styleUrls: ['home.page.scss'],
   imports: [
     CommonModule,
-    RouterModule, // ✅ necesario para routerLink
     IonicModule,
-     MenuComponent
+
 
   ],
 })

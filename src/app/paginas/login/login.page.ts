@@ -16,7 +16,7 @@ import {
   IonNote,
   IonText,
   IonLabel,
-  IonFooter,
+
   ToastController,
   LoadingController,
   NavController, IonImg } from '@ionic/angular/standalone';
@@ -32,16 +32,13 @@ import { GeneralService } from 'src/app/servicios/general';
     CommonModule,
     ReactiveFormsModule,
     IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
     IonInput,
     IonButton,
     IonItem,
     IonNote,
     IonText,
     IonLabel,
-    IonFooter,
+
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

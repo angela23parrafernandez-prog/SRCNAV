@@ -27,6 +27,13 @@ export class MenuComponent implements OnInit {
   esAdmin(): boolean {
     return this.usuario?.id_rol == 1;
   }
+    esAdminmas(): boolean {
+      return this.usuario?.id_rol === 1 || this.usuario?.id_rol === 2;
+    }
+
+  esgeneral(): boolean {
+    return this.usuario?.id_rol == 3;
+  }
 
   cerrarSesion() {
     this.auth.logout();

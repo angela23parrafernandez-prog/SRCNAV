@@ -28,4 +28,11 @@ export class UsuariosService {
   createUsuario(data: any): Observable<any> {
     return this.http.post(this.API_URL, data);
   }
+
+  /** Obtener solo usuarios con correo y contraseña */
+    getUsuariosConCredenciales(): Observable<any[]> {
+      return this.http.get<any[]>(`${this.API_URL}/con-credenciales`);
+    }
+
+
 }

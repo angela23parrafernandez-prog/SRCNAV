@@ -24,7 +24,7 @@ import { MenuComponent } from 'src/app/componentes/menu/menu.component';
     CommonModule,
     RouterModule,
     FormsModule,
-    ReactiveFormsModule,MenuComponent
+    ReactiveFormsModule
   ],
 })
 export class UsuarioPage implements OnInit {

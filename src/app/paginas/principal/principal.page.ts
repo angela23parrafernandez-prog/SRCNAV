@@ -10,7 +10,7 @@ import {
   IonRow,
   IonCol,
   IonCard,
-  IonCardHeader,
+
   IonCardTitle,
   IonCardContent,
   IonIcon, IonImg } from '@ionic/angular/standalone';
@@ -23,14 +23,10 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [IonImg, 
     IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
     IonGrid,
     IonRow,
     IonCol,
     IonCard,
-    IonCardHeader,
     IonCardTitle,
     IonCardContent,
     IonIcon,

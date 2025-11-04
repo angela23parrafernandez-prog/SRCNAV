@@ -65,6 +65,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'crear-usuario',
+        loadComponent: () =>
+          import('./paginas/crear-usuario/crear-usuario.page').then(
+            (m) => m.CrearUsuarioPage
+          ),
+      },
+      {
         path: 'guardia',
         loadComponent: () =>
           import('./paginas/guardia/guardia.page').then(
@@ -79,4 +86,9 @@ export const routes: Routes = [
     path: '**',
     redirectTo: 'principal',
   },
+  {
+    path: 'crear-usuario',
+    loadComponent: () => import('./paginas/crear-usuario/crear-usuario.page').then( m => m.CrearUsuarioPage)
+  },
+
 ];

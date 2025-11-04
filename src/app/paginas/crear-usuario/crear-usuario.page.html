@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar >
+    <ion-title>Gestión de Usuarios</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" color="light" (click)="toggleFormulario()">
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+        {{ mostrandoFormulario ? 'Cancelar' : 'Nuevo' }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- FORMULARIO PEQUEÑO Y COMPACTO -->
+  <div *ngIf="mostrandoFormulario" class="formulario-compacto">
+    <ion-item>
+      <ion-label position="stacked">Cédula *</ion-label>
+      <ion-input [(ngModel)]="usuario.cedula" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Nombre *</ion-label>
+      <ion-input [(ngModel)]="usuario.nombre" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Apellido *</ion-label>
+      <ion-input [(ngModel)]="usuario.apellido" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Teléfono</ion-label>
+      <ion-input [(ngModel)]="usuario.telefono" type="tel"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Correo *</ion-label>
+      <ion-input [(ngModel)]="usuario.correo" type="email"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Contraseña *</ion-label>
+      <ion-input [(ngModel)]="usuario.contrasena" type="password"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Rol *</ion-label>
+      <ion-select
+        placeholder="Selecciona un rol"
+        [(ngModel)]="usuario.id_rol"
+        interface="popover"
+      >
+        <ion-select-option
+          *ngFor="let rol of rolesDisponibles"
+          [value]="rol.id"
+        >
+          {{ rol.nombre }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button
+      color="primary"
+      (click)="crearUsuario()"
+      size="small"
+      style="margin-top: 8px"
+    >
+      Registrar
+    </ion-button>
+  </div>
+
+  <!-- LISTADO DE USUARIOS -->
+  <ion-list *ngIf="!mostrandoFormulario">
+    <ion-item *ngFor="let u of usuarios">
+      <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+      <ion-label>
+        <h2>{{ u.nombre }} {{ u.apellido }}</h2>
+        <p><strong>Cédula:</strong> {{ u.cedula }}</p>
+        <p><strong>Correo:</strong> {{ u.correo }}</p>
+        <p>
+        <strong>Rol:</strong>
+        {{ rolesInfo[u.id_rol]?.nombre || 'Desconocido' }}
+      </p>
+
+      </ion-label>
+    </ion-item>
+
+    <ion-text color="medium" *ngIf="usuarios.length === 0">
+      No hay usuarios con credenciales registradas.
+    </ion-text>
+  </ion-list>
+
+  <ion-spinner *ngIf="cargando" name="crescent"></ion-spinner>
+</ion-content>

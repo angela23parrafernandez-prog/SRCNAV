@@ -5,7 +5,7 @@ import { MenuComponent } from './componentes/menu/menu.component';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet, MenuComponent],
+  imports: [IonApp, IonRouterOutlet],
 })
 export class AppComponent {
   constructor() {}

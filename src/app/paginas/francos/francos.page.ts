@@ -7,6 +7,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FrancosService } from 'src/app/servicios/francos';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { Auth } from 'src/app/servicios/auth';
 
 @Component({
   selector: 'app-francos',
@@ -54,9 +55,19 @@ export class FrancosPage implements OnInit {
   dias = Array.from({ length: 31 }, (_, i) => i + 1);
   anios = [2024, 2025, 2026];
 
+   usuario: any = null;
+  constructor(private auth: Auth) {}
   ngOnInit() {
     this.cargarFrancos();
+
+     //  Suscribirse al observable para actualizar automáticamente el usuario
+    this.auth.usuario$.subscribe((user) => {
+      this.usuario = user;
+    });
   }
+     esAdminmas(): boolean {
+      return this.usuario?.id_rol === 1 || this.usuario?.id_rol === 2;
+    }
 
   ionViewWillEnter() {
     this.cargarFrancos();
@@ -205,7 +216,7 @@ exportarExcel() {
     });
   });
 
-  // 🧾 Crear hoja y libro Excel
+  //  Crear hoja y libro Excel
   const hoja = XLSX.utils.json_to_sheet(filas);
 
   // Opcional: ajustar ancho automático de columnas
@@ -217,10 +228,10 @@ exportarExcel() {
   const libro = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(libro, hoja, 'Francos');
 
-  // 📁 Nombre dinámico del archivo
+  //  Nombre dinámico del archivo
   const nombreArchivo = this.obtenerNombreArchivo();
 
-  // 💾 Guardar archivo Excel
+  //  Guardar archivo Excel
   const buffer = XLSX.write(libro, { bookType: 'xlsx', type: 'array' });
   const blob = new Blob([buffer], { type: 'application/octet-stream' });
   saveAs(blob, nombreArchivo);

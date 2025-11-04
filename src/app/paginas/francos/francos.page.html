@@ -2,7 +2,7 @@
   <ion-toolbar>
     GRUMETES
     <ion-buttons slot="end">
-      <ion-button [routerLink]="['/franco']">
+      <ion-button *ngIf="esAdminmas()" [routerLink]="['/franco']">
         Añadir
         <ion-icon name="add" color="black"></ion-icon>
       </ion-button>
