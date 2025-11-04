@@ -60,15 +60,14 @@ export class CrearUsuarioPage implements OnInit {
   };
 
   rolesDisponibles = [
-    { id: 1, nombre: 'Administrador' },
-    { id: 2, nombre: 'Normal' },
-    { id: 3, nombre: 'General' },
+    { id: 2, nombre: 'General' },
+    { id: 3, nombre: 'Normal' },
   ];
 
   rolesInfo: any = {
   1: { nombre: 'Administrador', descripcion: 'Acceso total al sistema, puede gestionar usuarios y registros.' },
-  2: { nombre: 'Usuario', descripcion: 'Acceso a funciones operativas, puede registrar y consultar datos.' },
-  3: { nombre: 'General', descripcion: 'Rol con acceso limitado, solo visualiza información básica.' },
+  2: { nombre: 'General', descripcion: 'Acceso a funciones operativas, puede registrar y consultar datos.' },
+  3: { nombre: 'Normal', descripcion: 'Rol con acceso limitado, solo visualiza información básica.' },
 };
 
 
