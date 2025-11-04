@@ -1,39 +1,112 @@
 <ion-header>
-  <ion-toolbar >
-   GRUMETES   
+  <ion-toolbar>
+    GRUMETES
     <ion-buttons slot="end">
       <ion-button [routerLink]="['/franco']">
         Añadir
-        <ion-icon  name="add" color="black"></ion-icon>
+        <ion-icon name="add" color="black"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-item lines="none">
-  <ion-label>Filtrar por mes</ion-label>
-  <ion-select [(ngModel)]="mesSeleccionado" (ionChange)="filtrarFrancos()">
-    <ion-select-option value="">Todos</ion-select-option>
-    <ion-select-option *ngFor="let m of meses" [value]="m.valor">
-      {{ m.nombre }}
-    </ion-select-option>
-  </ion-select>
-</ion-item>
 
-<ion-item lines="none">
-  <ion-label>Filtrar por compañía</ion-label>
-  <ion-select [(ngModel)]="companiaSeleccionada" (ionChange)="filtrarFrancos()">
-    <ion-select-option value="">Todas</ion-select-option>
-    <ion-select-option
-      *ngFor="let c of companias"
-      [value]="c.id_compania"
-    >
-      {{ c.nombre }}
-    </ion-select-option>
-  </ion-select>
-</ion-item>
+ <ion-toolbar  class="filtros-toolbar">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" size-md="2">
+        <ion-item lines="none" class="filtro-item">
+          <ion-label position="stacked">Día</ion-label>
+          <ion-select
+            [(ngModel)]="diaSeleccionado"
+            (ionChange)="filtrarFrancos()"
+            interface="popover"
+            placeholder="Todos"
+          >
+            <ion-select-option value="">Todos</ion-select-option>
+            <ion-select-option *ngFor="let d of dias" [value]="d">{{ d }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+
+      <ion-col size="6" size-md="2">
+        <ion-item lines="none" class="filtro-item">
+          <ion-label position="stacked">Mes</ion-label>
+          <ion-select
+            [(ngModel)]="mesSeleccionado"
+            (ionChange)="filtrarFrancos()"
+            interface="popover"
+            placeholder="Todos"
+          >
+            <ion-select-option value="">Todos</ion-select-option>
+            <ion-select-option *ngFor="let m of meses" [value]="m.valor">{{ m.nombre }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+
+      <ion-col size="6" size-md="2">
+        <ion-item lines="none" class="filtro-item">
+          <ion-label position="stacked">Año</ion-label>
+          <ion-select
+            [(ngModel)]="anioSeleccionado"
+            (ionChange)="filtrarFrancos()"
+            interface="popover"
+            placeholder="Todos"
+          >
+            <ion-select-option value="">Todos</ion-select-option>
+            <ion-select-option *ngFor="let a of anios" [value]="a">{{ a }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+
+      <ion-col size="6" size-md="3">
+        <ion-item lines="none" class="filtro-item">
+          <ion-label position="stacked">Compañía</ion-label>
+          <ion-select
+            [(ngModel)]="companiaSeleccionada"
+            (ionChange)="filtrarFrancos()"
+            interface="popover"
+            placeholder="Todas"
+          >
+            <ion-select-option value="">Todas</ion-select-option>
+            <ion-select-option *ngFor="let c of companias" [value]="c.id_compania">
+              {{ c.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+
+      <ion-col size="6" size-md="3">
+        <ion-item lines="none" class="filtro-item">
+          <ion-label position="stacked">Estado</ion-label>
+          <ion-select
+            [(ngModel)]="estadoSeleccionado"
+            (ionChange)="filtrarFrancos()"
+            interface="popover"
+            placeholder="Todos"
+          >
+            <ion-select-option value="">Todos</ion-select-option>
+            <ion-select-option value="PENDIENTE">PENDIENTE</ion-select-option>
+            <ion-select-option value="ACTIVO">ACTIVO</ion-select-option>
+            <ion-select-option value="FINALIZADO">FINALIZADO</ion-select-option>
+            <ion-select-option value="CANCELADO">CANCELADO</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-toolbar>
+<ion-toolbar color="light">
+  <ion-buttons slot="end">
+    <ion-button (click)="exportarExcel()">
+      <ion-icon name="download-outline" slot="start"></ion-icon>
+      Exportar Excel
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar>
 
 </ion-header>
+
+<!-- CONTENIDO -->
 <ion-content [fullscreen]="true" class="ion-padding">
-  
   <ng-container *ngIf="loading; else lista">
     <div class="flex justify-center items-center h-full">
       <ion-spinner name="crescent"></ion-spinner>
@@ -41,70 +114,105 @@
   </ng-container>
 
   <ng-template #lista>
-    <ion-list *ngIf="francosFiltrados.length > 0; else vacio">
-  <ion-item *ngFor="let franco of francosFiltrados" (click)="verDetalle(franco)">
-        <ion-label>
-          <h2>{{ franco.usuario?.nombre }} {{ franco.usuario?.apellido }}</h2>
-          <p>
-            <strong>Cédula:</strong> {{ franco.usuario?.cedula }} <br />
-            <strong>Compañía:</strong> {{
-            getNombreCompania(franco.usuario?.id_compania) }}<br />
+    <ion-list *ngIf="grupos.length > 0; else vacio">
+      <ion-item-group *ngFor="let grupo of grupos">
+        <!-- Fila principal por persona -->
+        <ion-item  lines="full" (click)="toggleGrupo(grupo)">
+          <ion-label>
+            <h2>{{ grupo.nombre }} {{ grupo.apellido }}</h2>
+            <p>
+              <strong>Cédula:</strong> {{ grupo.cedula }}<br />
+              <strong>Compañía:</strong> {{ grupo.compania }}
+            </p>
+          </ion-label>
 
-            <!--  Solo cuando está ACTIVO -->
-            <ng-container *ngIf="franco.estado === 'ACTIVO'">
-              <strong>Estado:</strong> Excusado <br />
-              <ng-container
-                [ngSwitch]="calcularTiempoRestante(franco.fecha_fin).tipo"
-              >
-                <strong *ngSwitchCase="'horas'">
-                  Faltan {{ calcularTiempoRestante(franco.fecha_fin).valor }}
-                  horas
-                </strong>
-                <strong *ngSwitchCase="'retraso'">
-                  {{ calcularTiempoRestante(franco.fecha_fin).valor }} días de
-                  retraso
-                </strong>
+          <!-- Si tiene excusa activa -->
+          <ion-badge
+            *ngIf="grupo.francoActivo"
+            [color]="
+              grupo.francoActivo.estado === 'ACTIVO' &&
+              calcularTiempoRestante(grupo.francoActivo.fecha_fin).tipo === 'retraso'
+                ? 'danger'
+                : 'success'
+            "
+          >
+            <ng-container
+              [ngSwitch]="calcularTiempoRestante(grupo.francoActivo.fecha_fin).tipo"
+            >
+              <ng-container *ngSwitchCase="'dias'">
+                {{ calcularTiempoRestante(grupo.francoActivo.fecha_fin).valor }} días restantes
+              </ng-container>
+              <ng-container *ngSwitchCase="'horas'">
+                {{ calcularTiempoRestante(grupo.francoActivo.fecha_fin).valor }} horas restantes
+              </ng-container>
+              <ng-container *ngSwitchCase="'retraso'">
+                {{ calcularTiempoRestante(grupo.francoActivo.fecha_fin).valor }} días de retraso
               </ng-container>
             </ng-container>
+          </ion-badge>
+        </ion-item>
 
-            <!--  Otros estados -->
-            <ng-container *ngIf="franco.estado !== 'ACTIVO'">
-              <strong>Estado:</strong> {{ franco.estado }}
-            </ng-container>
-          </p>
-        </ion-label>
+     
+<!-- Lista desplegable de excusas -->
+<div *ngIf="grupo.abierto" class="bg-zinc-700 p-3 rounded-b-lg">
+  <ion-item
+    *ngFor="let franco of grupo.francos"
+    color="medium"
+    lines="none"
+    detail="true"
+    button
+    (click)="verDetalle(franco)"
+  >
+    <ion-label>
+      <p>
+        <strong>Estado:</strong> {{ franco.estado }}<br />
+        <strong>Fecha inicio:</strong> {{ franco.fecha_inicio }}<br />
+        <strong>Fecha fin:</strong> {{ franco.fecha_fin }}<br />
 
-        <ion-badge
-          *ngIf="franco.estado === 'ACTIVO'"
-          [color]="
-    calcularTiempoRestante(franco.fecha_fin).tipo === 'retraso'
-      ? 'danger'
-      : 'success'
-  "
-        >
-          <ng-container
-            [ngSwitch]="calcularTiempoRestante(franco.fecha_fin).tipo"
-          >
-            <ng-container *ngSwitchCase="'dias'">
-              {{ calcularTiempoRestante(franco.fecha_fin).valor }} días
-              restantes
-            </ng-container>
-            <ng-container *ngSwitchCase="'horas'">
-              {{ calcularTiempoRestante(franco.fecha_fin).valor }} horas
-              restantes
-            </ng-container>
-            <ng-container *ngSwitchCase="'retraso'">
-              {{ calcularTiempoRestante(franco.fecha_fin).valor }} días de
-              retraso
-            </ng-container>
+        <ng-container *ngIf="franco.estado === 'ACTIVO'; else duracion">
+          <strong>Tiempo restante:</strong>
+          <ng-container [ngSwitch]="calcularTiempoRestante(franco.fecha_fin).tipo">
+            <span *ngSwitchCase="'dias'">
+              {{ calcularTiempoRestante(franco.fecha_fin).valor }} días restantes
+            </span>
+            <span *ngSwitchCase="'horas'">
+              {{ calcularTiempoRestante(franco.fecha_fin).valor }} horas restantes
+            </span>
+            <span *ngSwitchCase="'retraso'">
+              {{ calcularTiempoRestante(franco.fecha_fin).valor }} días de retraso
+            </span>
           </ng-container>
-        </ion-badge>
-      </ion-item>
+        </ng-container>
+
+        <!-- Duración total para los que no están activos -->
+        <ng-template #duracion>
+          <strong>Duración:</strong>
+          {{ calcularDuracion(franco.fecha_inicio, franco.fecha_fin) }} días
+        </ng-template>
+
+        <strong *ngIf="franco.observacion"><br />Observación:</strong>
+        {{ franco.observacion }}
+      </p>
+    </ion-label>
+  </ion-item>
+
+  <!-- TOTAL acumulado -->
+  <ion-item color="dark" lines="none">
+    <ion-label class="ion-text-end">
+      <ion-badge color="tertiary">
+        Total excusado: {{ calcularTotalDias(grupo.francos) }} días
+      </ion-badge>
+    </ion-label>
+  </ion-item>
+</div>
+
+
+      </ion-item-group>
     </ion-list>
 
     <ng-template #vacio>
       <div class="ion-text-center ion-margin-top">
-        <p>No hay registros activos de sanidad</p>
+        <p>No hay registros disponibles</p>
       </div>
     </ng-template>
   </ng-template>

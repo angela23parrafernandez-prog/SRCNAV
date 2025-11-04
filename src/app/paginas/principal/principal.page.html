@@ -1,20 +1,23 @@
-<ion-content>
+<ion-content class="fondo">
   <div class="layout">
-    <!-- Sidebar vertical -->
+    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="logo-container">
         <ion-img src="assets/img/prueba.png" alt="Logo"></ion-img>
         <h2>Mi Plataforma</h2>
       </div>
-      <nav class="menu">
+
+      <nav class="menu" routerLink="/inicio">
         <ion-icon name="home-outline"></ion-icon>
         <span>Inicio</span>
       </nav>
-      <nav class="menu">
+
+      <nav class="menu" routerLink="/perfil">
         <ion-icon name="person-circle-outline"></ion-icon>
         <span>Perfil</span>
       </nav>
-      <nav class="menu">
+
+      <nav class="menu" routerLink="/configuracion">
         <ion-icon name="settings-outline"></ion-icon>
         <span>Configuración</span>
       </nav>
@@ -24,41 +27,35 @@
     <main class="contenido">
       <ion-grid fixed>
         <ion-row>
-          <!-- Sanidad -->
+          <!-- Módulo Sanidad -->
           <ion-col size="12" size-md="4">
             <ion-card button (click)="irSanidad()">
-              <ion-card-header>
-                <ion-icon name="medkit-outline" class="icono-modulo"></ion-icon>
-                <ion-card-title> Módulo Sanidad</ion-card-title>
-              </ion-card-header>
+              <ion-img src="assets/img/sanidad.png" alt="Sanidad" class="img-modulo"></ion-img>
+              <ion-card-title>Módulo Sanidad</ion-card-title>
               <ion-card-content>
                 Gestión de monitoreo y registros.
               </ion-card-content>
             </ion-card>
           </ion-col>
 
-          <!-- Seguridad -->
+          <!-- Otro módulo -->
           <ion-col size="12" size-md="4">
             <ion-card button (click)="irSeguridad()">
-              <ion-card-header>
-                <ion-icon name="shield-checkmark-outline" class="icono-modulo"></ion-icon>
-                <ion-card-title>Otro</ion-card-title>
-              </ion-card-header>
+              <ion-icon name="shield-checkmark-outline" class="icono-modulo"></ion-icon>
+              <ion-card-title>Seguridad</ion-card-title>
               <ion-card-content>
-                Control .
+                Control y protección institucional.
               </ion-card-content>
             </ion-card>
           </ion-col>
 
-          <!-- Energía -->
+          <!-- Otro módulo -->
           <ion-col size="12" size-md="4">
             <ion-card button (click)="irEnergia()">
-              <ion-card-header>
-                <ion-icon name="flash-outline" class="icono-modulo"></ion-icon>
-                <ion-card-title>Otro</ion-card-title>
-              </ion-card-header>
+              <ion-icon name="flash-outline" class="icono-modulo"></ion-icon>
+              <ion-card-title>Energía</ion-card-title>
               <ion-card-content>
-                Supervisión .
+                Supervisión de sistemas eléctricos.
               </ion-card-content>
             </ion-card>
           </ion-col>

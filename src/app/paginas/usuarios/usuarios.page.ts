@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { UsuariosService } from 'src/app/servicios/usuarios';
 import { Router, RouterLink } from '@angular/router';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-usuarios',
@@ -143,4 +145,71 @@ export class UsuariosPage implements OnInit {
   obtenerCompania(id: number) {
     return this.companias.find((c) => c.id_compania === id)?.nombre || '-';
   }
+
+
+  exportarExcel() {
+  // Si hay filtros activos, exporta los filtrados; si no, todos
+  const datosExportar =
+    this.usuariosFiltrados.length > 0 ? this.usuariosFiltrados : this.usuarios;
+
+  if (datosExportar.length === 0) {
+    alert('No hay datos para exportar.');
+    return;
+  }
+
+  // 🔄 Transformar datos en formato plano
+  const filas: any[] = [];
+  datosExportar.forEach((u) => {
+    filas.push({
+      Cédula: u.cedula,
+      Nombre: `${u.nombre} ${u.apellido}`,
+      Compañía: this.obtenerCompania(u.id_compania),
+      Grado: this.obtenerDescripcion(this.grados, u.id_grado),
+      Especialidad: this.obtenerDescripcion(this.especialidades, u.id_especialidad),
+      Sección: this.obtenerDescripcion(this.secciones, u.id_seccion),
+    });
+  });
+
+  // 🧾 Crear hoja y libro Excel
+  const hoja = XLSX.utils.json_to_sheet(filas);
+
+  // Ajustar ancho automático de columnas
+  const maxLengths = Object.keys(filas[0]).map((key) =>
+    Math.max(key.length, ...filas.map((row) => (row[key] ? row[key].toString().length : 0)))
+  );
+  hoja['!cols'] = maxLengths.map((w) => ({ wch: w + 2 }));
+
+  const libro = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(libro, hoja, 'Usuarios');
+
+  // 📁 Nombre dinámico
+  const nombreArchivo = this.obtenerNombreArchivo();
+
+  // 💾 Guardar
+  const buffer = XLSX.write(libro, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([buffer], { type: 'application/octet-stream' });
+  saveAs(blob, nombreArchivo);
+}
+
+private obtenerNombreArchivo(): string {
+  const fecha = new Date();
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+  const anio = fecha.getFullYear();
+
+  let nombre = `usuarios_${anio}-${mes}-${dia}`;
+  const filtros = [];
+
+  if (this.filtros.nombre) filtros.push(`nombre-${this.filtros.nombre}`);
+  if (this.filtros.apellido) filtros.push(`apellido-${this.filtros.apellido}`);
+  if (this.filtros.cedula) filtros.push(`cedula-${this.filtros.cedula}`);
+  if (this.filtros.id_compania) filtros.push(`comp${this.filtros.id_compania}`);
+  if (this.filtros.id_grado) filtros.push(`grado${this.filtros.id_grado}`);
+  if (this.filtros.id_especialidad) filtros.push(`esp${this.filtros.id_especialidad}`);
+  if (this.filtros.id_seccion) filtros.push(`sec${this.filtros.id_seccion}`);
+
+  if (filtros.length > 0) nombre += '_' + filtros.join('_');
+  return `${nombre}.xlsx`;
+}
+
 }

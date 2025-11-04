@@ -1,11 +1,12 @@
+
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-
-import { FrancosService } from 'src/app/servicios/francos';
 import { Router, RouterLink } from '@angular/router';
-import { MenuComponent } from 'src/app/componentes/menu/menu.component';
+import { FrancosService } from 'src/app/servicios/francos';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-francos',
@@ -17,11 +18,17 @@ import { MenuComponent } from 'src/app/componentes/menu/menu.component';
 export class FrancosPage implements OnInit {
   private francoService = inject(FrancosService);
   private router = inject(Router);
-  francosFiltrados: any[] = [];
   francos: any[] = [];
+  grupos: any[] = [];
   loading = true;
+
+  // Filtros
+  diaSeleccionado = '';
   mesSeleccionado = '';
+  anioSeleccionado = '';
   companiaSeleccionada = '';
+  estadoSeleccionado = '';
+
   companias = [
     { id_compania: 1, nombre: 'Henao' },
     { id_compania: 4, nombre: 'Acevedo' },
@@ -44,60 +51,81 @@ export class FrancosPage implements OnInit {
     { nombre: 'Diciembre', valor: 12 },
   ];
 
-  
+  dias = Array.from({ length: 31 }, (_, i) => i + 1);
+  anios = [2024, 2025, 2026];
+
   ngOnInit() {
     this.cargarFrancos();
   }
+
   ionViewWillEnter() {
     this.cargarFrancos();
   }
-  /** Cargar francos activos o pendientes */
+
   cargarFrancos() {
     this.francoService.getFrancosActivos().subscribe({
       next: (data) => {
-      this.francos = data;
-      this.francosFiltrados = [...data]; 
-      this.loading = false;
-    },
-
+        this.francos = data;
+        this.filtrarFrancos();
+        this.loading = false;
+      },
       error: (err) => {
-        console.error('Error al cargar sanidad:', err);
+        console.error('Error al cargar francos:', err);
         this.loading = false;
       },
     });
   }
 
-  /**  Ir al detalle del usuario seleccionado */
-  verDetalle(franco: any) {
-    console.log(franco);
-    this.router.navigate(['/franco'], {
-      state: { francoSeleccionado: franco },
+  filtrarFrancos() {
+    const filtrados = this.francos.filter((f) => {
+      const fecha = new Date(f.fecha_fin);
+      const dia = fecha.getDate();
+      const mes = fecha.getMonth() + 1;
+      const anio = fecha.getFullYear();
+
+      const companiaOK =
+        !this.companiaSeleccionada ||
+        f.usuario?.id_compania === Number(this.companiaSeleccionada);
+      const mesOK = !this.mesSeleccionado || mes === Number(this.mesSeleccionado);
+      const diaOK = !this.diaSeleccionado || dia === Number(this.diaSeleccionado);
+      const anioOK = !this.anioSeleccionado || anio === Number(this.anioSeleccionado);
+      const estadoOK = !this.estadoSeleccionado || f.estado === this.estadoSeleccionado;
+
+      return companiaOK && mesOK && diaOK && anioOK && estadoOK;
     });
+
+    this.grupos = this.agruparPorPersona(filtrados);
   }
-  calcularTiempoRestante(fechaFin: string): {
-    tipo: 'dias' | 'horas' | 'retraso';
-    valor: number;
-  } {
-    const ahora = new Date();
 
-    //  Parseo correcto en zona local (evita desfase UTC)
-    const [year, month, day] = fechaFin.split('-').map(Number);
-    const fin = new Date(year, month - 1, day, 23, 59, 59); // último segundo del día
+  agruparPorPersona(francos: any[]) {
+    const grupos: any[] = [];
+    const mapa = new Map<string, any>();
 
-    const diferenciaMs = fin.getTime() - ahora.getTime();
-    const diferenciaHoras = diferenciaMs / (1000 * 60 * 60);
-    const diferenciaDias = diferenciaMs / (1000 * 60 * 60 * 24);
-
-    if (diferenciaMs > 0) {
-      if (diferenciaHoras < 24) {
-        return { tipo: 'horas', valor: Math.floor(diferenciaHoras) };
-      } else {
-        return { tipo: 'dias', valor: Math.ceil(diferenciaDias) };
+    francos.forEach((f) => {
+      const key = `${f.usuario?.cedula}-${f.usuario?.nombre}-${f.usuario?.apellido}`;
+      if (!mapa.has(key)) {
+        mapa.set(key, {
+          cedula: f.usuario?.cedula,
+          nombre: f.usuario?.nombre,
+          apellido: f.usuario?.apellido,
+          compania: this.getNombreCompania(f.usuario?.id_compania),
+          francos: [],
+          francoActivo: null,
+          abierto: false,
+        });
       }
-    } else {
-      //  Ya pasó la fecha → días de retraso
-      return { tipo: 'retraso', valor: Math.abs(Math.ceil(diferenciaDias)) };
-    }
+      mapa.get(key).francos.push(f);
+      if (f.estado === 'ACTIVO') {
+        mapa.get(key).francoActivo = f;
+      }
+    });
+
+    mapa.forEach((v) => grupos.push(v));
+    return grupos;
+  }
+
+  toggleGrupo(grupo: any) {
+    grupo.abierto = !grupo.abierto;
   }
 
   getNombreCompania(id: number): string {
@@ -105,16 +133,121 @@ export class FrancosPage implements OnInit {
     return comp ? comp.nombre : 'Sin compañía';
   }
 
+  calcularTiempoRestante(fechaFin: string): {
+    tipo: 'dias' | 'horas' | 'retraso';
+    valor: number;
+  } {
+    const ahora = new Date();
+    const [year, month, day] = fechaFin.split('-').map(Number);
+    const fin = new Date(year, month - 1, day, 23, 59, 59);
+    const diffMs = fin.getTime() - ahora.getTime();
+    const diffHoras = diffMs / (1000 * 60 * 60);
+    const diffDias = diffMs / (1000 * 60 * 60 * 24);
 
-   filtrarFrancos() {
-    this.francosFiltrados = this.francos.filter((f) => {
-      const fecha = new Date(f.fecha_fin);
-      const mes = fecha.getMonth() + 1; // enero = 1
-      const companiaOK =
-        !this.companiaSeleccionada ||
-        f.usuario?.id_compania === Number(this.companiaSeleccionada);
-      const mesOK = !this.mesSeleccionado || mes === Number(this.mesSeleccionado);
-      return companiaOK && mesOK;
+    if (diffMs > 0) {
+      if (diffHoras < 24) return { tipo: 'horas', valor: Math.floor(diffHoras) };
+      return { tipo: 'dias', valor: Math.ceil(diffDias) };
+    }
+    return { tipo: 'retraso', valor: Math.abs(Math.ceil(diffDias)) };
+  }
+
+    calcularDuracion(fechaInicio: string, fechaFin: string): number {
+    const [y1, m1, d1] = fechaInicio.split('-').map(Number);
+    const [y2, m2, d2] = fechaFin.split('-').map(Number);
+    const inicio = new Date(y1, m1 - 1, d1);
+    const fin = new Date(y2, m2 - 1, d2);
+    const diffMs = fin.getTime() - inicio.getTime();
+    const diffDias = Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1; // incluir día inicial
+    return diffDias;
+  }
+
+   calcularTotalDias(francos: any[]): number {
+    let total = 0;
+    francos.forEach((f) => {
+      if (f.fecha_inicio && f.fecha_fin) {
+        total += this.calcularDuracion(f.fecha_inicio, f.fecha_fin);
+      }
+    });
+    return total;
+  }
+
+
+  verDetalle(franco: any) {
+    console.log(franco);
+    this.router.navigate(['/franco'], {
+      state: { francoSeleccionado: franco },
     });
   }
+
+exportarExcel() {
+  // Si hay filtros aplicados, exportamos lo filtrado; si no, todo
+  const datosExportar = this.grupos.length > 0 ? this.grupos : this.agruparPorPersona(this.francos);
+
+  if (datosExportar.length === 0) {
+    alert('No hay datos para exportar.');
+    return;
+  }
+
+  // 🔄 Transformar datos en filas planas sin usar flatMap()
+  const filas: any[] = [];
+  datosExportar.forEach((grupo) => {
+    grupo.francos.forEach((f: any) => {
+      filas.push({
+        Cédula: grupo.cedula,
+        Nombre: `${grupo.nombre} ${grupo.apellido}`,
+        Compañía: grupo.compania,
+        Estado: f.estado,
+        'Fecha inicio': f.fecha_inicio,
+        'Fecha fin': f.fecha_fin,
+        'Duración (días)': this.calcularDuracion(f.fecha_inicio, f.fecha_fin),
+        Observación: f.observacion || '',
+      });
+    });
+  });
+
+  // 🧾 Crear hoja y libro Excel
+  const hoja = XLSX.utils.json_to_sheet(filas);
+
+  // Opcional: ajustar ancho automático de columnas
+  const maxLengths = Object.keys(filas[0]).map((key) =>
+    Math.max(key.length, ...filas.map((row) => (row[key] ? row[key].toString().length : 0)))
+  );
+  hoja['!cols'] = maxLengths.map((w) => ({ wch: w + 2 }));
+
+  const libro = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(libro, hoja, 'Francos');
+
+  // 📁 Nombre dinámico del archivo
+  const nombreArchivo = this.obtenerNombreArchivo();
+
+  // 💾 Guardar archivo Excel
+  const buffer = XLSX.write(libro, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([buffer], { type: 'application/octet-stream' });
+  saveAs(blob, nombreArchivo);
 }
+
+private obtenerNombreArchivo(): string {
+  const fecha = new Date();
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+  const anio = fecha.getFullYear();
+
+  let nombre = `francos_${anio}-${mes}-${dia}`;
+  const filtros = [];
+
+  if (this.mesSeleccionado) filtros.push(`mes${this.mesSeleccionado}`);
+  if (this.diaSeleccionado) filtros.push(`dia${this.diaSeleccionado}`);
+  if (this.companiaSeleccionada) filtros.push(`comp${this.companiaSeleccionada}`);
+  if (this.estadoSeleccionado) filtros.push(this.estadoSeleccionado);
+
+  if (filtros.length > 0) {
+    nombre += '_' + filtros.join('_');
+  }
+
+  return `${nombre}.xlsx`;
+}
+
+
+}
+
+
