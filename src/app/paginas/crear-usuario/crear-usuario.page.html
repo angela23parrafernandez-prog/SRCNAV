@@ -1,15 +1,16 @@
 <ion-header>
   <ion-toolbar >
-    <ion-title>Gestión de Usuarios</ion-title>
-    
-  </ion-toolbar>
+  <ion-title color="light">Gestión de Usuarios</ion-title>
+  <ion-buttons slot="end">
+    <ion-button fill="solid" color="primary" (click)="toggleFormulario()">
+      <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      {{ mostrandoFormulario ? 'Cancelar' : 'Nuevo' }}
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar>
+
 </ion-header>
-<ion-buttons slot="end">
-      <ion-button fill="clear" color="light" (click)="toggleFormulario()">
-        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
-        {{ mostrandoFormulario ? 'Cancelar' : 'Nuevo' }}
-      </ion-button>
-    </ion-buttons>
+
 
 <ion-content class="ion-padding">
   <!-- FORMULARIO PEQUEÑO Y COMPACTO -->
