@@ -161,9 +161,11 @@
     lines="none"
     detail="true"
     button
-    (click)="verDetalle(franco)"
+    [disabled]="!esAdminmas()"       
+    (click)="esAdminmas() && verDetalle(franco)"
+    
   >
-    <ion-label>
+    <ion-label >
       <p>
         <strong>Estado:</strong> {{ franco.estado }}<br />
         <strong>Fecha inicio:</strong> {{ franco.fecha_inicio }}<br />
